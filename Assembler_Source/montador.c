@@ -258,6 +258,7 @@ void DetectarLabels(void)
 	        case MOV_CODE :
             case OUTCHAR_CODE :
             case CMP_CODE :
+            case DJNZ_CODE : //Intrução adicionada
                 parser_SkipUntil(',');
                 parser_SkipUntilEnd();
                 end_cnt++;
@@ -1344,6 +1345,35 @@ void MontarInstrucoes(void)
                     parser_Write_Inst(str_msg,end_cnt);
                     end_cnt +=1;
                     free(str_tmp1);
+                    break;
+                
+                /* ==============
+                   Djnz End
+                   ==============
+                */
+               
+                case DJNZ_CODE: //Instrução Adicionada
+                    //DEC
+                    str_tmp1 = parser_GetItem_s(); //Pegando qual registrador terá seu valor decrementado
+                    val1 = BuscaRegistrador(str_tmp1);
+                    free(str_tmp1);
+                    str_tmp1 = ConverteRegistrador(val1);
+                    sprintf(str_msg,"%s%s1000000",INC,str_tmp1);
+                    free(str_tmp1);
+                    parser_Write_Inst(str_msg,end_cnt);
+                    end_cnt += 1;
+
+                    //JNZ
+                    val2 = RecebeEndereco(); //Endereço para o qual o fluxo do código será direcionado
+                    str_tmp1 = NumPBinString(val2);
+                    sprintf(str_msg,"%s%s000000",JMP,COND_NZ);
+                    parser_Write_Inst(str_msg,end_cnt);
+                    end_cnt += 1;
+                    sprintf(str_msg,"%s",str_tmp1);
+                    parser_Write_Inst(str_msg,end_cnt);
+                    end_cnt +=1;
+                    free(str_tmp1);
+
                     break;
                     
                 /* ==============
@@ -2453,6 +2483,10 @@ int BuscaInstrucao(char * nome)
     else if (strcmp(str_tmp,JNZ_STR) == 0)
     {
         return JNZ_CODE;
+    }
+    else if (strcmp(str_tmp,DJNZ_STR) == 0) //Instrução adicionada
+    {
+        return DJNZ_CODE;
     }
     else if (strcmp(str_tmp,JC_STR) == 0)
     {

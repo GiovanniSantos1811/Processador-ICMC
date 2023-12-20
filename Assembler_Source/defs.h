@@ -110,6 +110,7 @@
 #define INPUT_CODE              96
 #define OUTPUT_CODE             97
 #define SOUND_CODE              98
+#define DJNZ_CODE               99 //Instrução adicionada
 
 /* Definicoes dos op codes (binarios em strings) */
 
@@ -156,6 +157,7 @@
 #define RTI             "000100" /* RTI e um RTS por enquanto. */
 #define PUSH            "000101"
 #define POP             "000110"
+
 /* Adddendum */
 #define SET             "000111"
 #define CALLR           "001001"
@@ -268,6 +270,7 @@
 #define JNO_STR                 "JNO"
 #define JDZ_STR                 "JDZ"
 #define JN_STR                  "JN"
+#define DJNZ_STR                "DJNZ" //Intrução adicionada -> 2 parâmetros -> decrementa uma unidade em um registrador e pula para uma parte específica do código enquanto esse registrador não guardar 0
 
 
 /* CALL */

@@ -1,43 +1,3 @@
-// Para incluir uma nova INSTRUCAO, e' necessario mexer em 3 ugares diferentes:
-// 1) Definir os separadores da Instrucao e quantas linhas do EXE (mif) ela necessita:
-    /*  case LOAD_CODE :
-        case STORE_CODE :
-        case LOADIMED_CODE :
-        case STOREIMED_CODE :
-            parser_SkipUntil(','); 
-            parser_SkipUntilEnd(); 
-            end_cnt+=2; 
-            break;
-    */
-
-// 2) Explicar como o Montador vai montar os BITs da Instrucao e escrever no arquivo:
-    /*  case LOAD_CODE : // Load R1, End
-        str_tmp1 = parser_GetItem_s();
-        val1 = BuscaRegistrador(str_tmp1);
-        free(str_tmp1);
-        parser_Match(',');
-        val2 = RecebeEndereco();
-        str_tmp1 = ConverteRegistrador(val1);
-        str_tmp2 = NumPBinString(val2);
-        sprintf(str_msg,"%s%s0000000",LOAD,str_tmp1);
-        parser_Write_Inst(str_msg,end_cnt);
-        end_cnt += 1;
-        sprintf(str_msg,"%s",str_tmp2);
-        parser_Write_Inst(str_msg,end_cnt);
-        end_cnt +=1;
-        free(str_tmp1);
-        free(str_tmp2);
-        break;
-    */
-
-// 3) Buscar o nome da instrucao na base de instrucoes e retornar 'op_code interno' da instrucao:
-    /*  if (strcmp(str_tmp,LOAD_STR) == 0)
-        {
-            return LOAD_CODE;
-        }
-    */
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -242,11 +202,10 @@ void DetectarLabels(void)
             case SUBC_CODE :
             case MUL_CODE :
             case DIV_CODE :
-	        case LMOD_CODE :	    
+	    case LMOD_CODE :	    
             case AND_CODE :
             case OR_CODE :
             case XOR_CODE :
-            case SOUND_CODE:
                 parser_SkipUntil(',');
                 parser_SkipUntil(',');
                 parser_SkipUntilEnd();
@@ -258,7 +217,7 @@ void DetectarLabels(void)
 	        case MOV_CODE :
             case OUTCHAR_CODE :
             case CMP_CODE :
-            case DJNZ_CODE : //Intrução adicionada
+            case DJNZ_CODE: //1º parâmetro - registro que será decrescido, 2º parâmetro - endereço para onde o código será desviado
                 parser_SkipUntil(',');
                 parser_SkipUntilEnd();
                 end_cnt++;
@@ -397,7 +356,7 @@ void MontarInstrucoes(void)
                    ==============
                 */
                 
-                case LOAD_CODE : // Load R1, End
+                case LOAD_CODE :
                     str_tmp1 = parser_GetItem_s();
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
@@ -649,39 +608,11 @@ void MontarInstrucoes(void)
                     break;
 
                 /* ==============
-	                SOUND Rx, Ry, Rz
-                   ==============
-                */
-
-                case SOUND_CODE :
-                    str_tmp1 = parser_GetItem_s();
-                    val1 = BuscaRegistrador(str_tmp1);
-                    free(str_tmp1);
-                    parser_Match(',');
-                    str_tmp2 = parser_GetItem_s();
-                    val2 = BuscaRegistrador(str_tmp2);
-                    free(str_tmp2);
-                    parser_Match(',');
-                    str_tmp3 = parser_GetItem_s();
-                    val3 = BuscaRegistrador(str_tmp3);
-                    free(str_tmp3);
-                    str_tmp1 = ConverteRegistrador(val1);
-                    str_tmp2 = ConverteRegistrador(val2);
-                    str_tmp3 = ConverteRegistrador(val3);
-                    sprintf(str_msg,"%s%s%s%s0",SOUND,str_tmp1,str_tmp2,str_tmp3);
-                    free(str_tmp1);
-                    free(str_tmp2);
-                    free(str_tmp3);
-                    parser_Write_Inst(str_msg,end_cnt);
-                    end_cnt += 1;
-                    break;
-
-                /* ==============
                    Add Rx, Ry, Rz
                    ==============
                 */
 
-                case ADD_CODE :  // Add R1, R2, R3
+                case ADD_CODE :
                     str_tmp1 = parser_GetItem_s(); /* ADD sem carry */
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
@@ -935,7 +866,7 @@ void MontarInstrucoes(void)
                     break;
 
                 /* ==============                   
-	               Or Rx, Ry, Rz
+	Or Rx, Ry, Rz
                    ==============
                 */
 
@@ -1346,34 +1277,29 @@ void MontarInstrucoes(void)
                     end_cnt +=1;
                     free(str_tmp1);
                     break;
-                
+
                 /* ==============
                    Djnz End
                    ==============
                 */
                
                 case DJNZ_CODE: //Instrução Adicionada
-                    //DEC
-                    str_tmp1 = parser_GetItem_s(); //Pegando qual registrador terá seu valor decrementado
+                    //Djnz
+                    str_tmp1 = parser_GetItem_s();
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
+                    parser_Match(',');
+                    val2 = RecebeEndereco();
                     str_tmp1 = ConverteRegistrador(val1);
-                    sprintf(str_msg,"%s%s1000000",INC,str_tmp1);
-                    free(str_tmp1);
+                    str_tmp2 = NumPBinString(val2);
+                    sprintf(str_msg,"%s%s0000000",DJNZ,str_tmp1);
                     parser_Write_Inst(str_msg,end_cnt);
                     end_cnt += 1;
-
-                    //JNZ
-                    val2 = RecebeEndereco(); //Endereço para o qual o fluxo do código será direcionado
-                    str_tmp1 = NumPBinString(val2);
-                    sprintf(str_msg,"%s%s000000",JMP,COND_NZ);
-                    parser_Write_Inst(str_msg,end_cnt);
-                    end_cnt += 1;
-                    sprintf(str_msg,"%s",str_tmp1);
+                    sprintf(str_msg,"%s",str_tmp2);
                     parser_Write_Inst(str_msg,end_cnt);
                     end_cnt +=1;
                     free(str_tmp1);
-
+                    free(str_tmp2);
                     break;
                     
                 /* ==============
@@ -2036,21 +1962,20 @@ void MontarInstrucoes(void)
                    ==============
                 */
                 
-
                 case PUSH_CODE :
                     str_tmp1 = parser_GetItem_s();
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
-            
-                    if(val1 == FR_CODE)
-                    sprintf(str_msg,"%s0001000000",PUSH);
-                    else {
-                    str_tmp1 = ConverteRegistrador(val1);
-                    sprintf(str_msg,"%s%s0000000",PUSH,str_tmp1);
-                    free(str_tmp1);
-                    }
-                    parser_Write_Inst(str_msg,end_cnt);
-                    end_cnt += 1;
+		    
+		    if(val1 == FR_CODE)
+			sprintf(str_msg,"%s0001000000",PUSH);
+		    else {
+			str_tmp1 = ConverteRegistrador(val1);
+			sprintf(str_msg,"%s%s0000000",PUSH,str_tmp1);
+			free(str_tmp1);
+			}
+  		    parser_Write_Inst(str_msg,end_cnt);
+		    end_cnt += 1;
                     break;
                     
                 /* ==============
@@ -2063,15 +1988,15 @@ void MontarInstrucoes(void)
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
 		    
-        		    if(val1 == FR_CODE)
-        			sprintf(str_msg,"%s0001000000",POP);
-        		    else {
-        			str_tmp1 = ConverteRegistrador(val1);
-        			sprintf(str_msg,"%s%s0000000",POP,str_tmp1);
-        			free(str_tmp1);
-        			}
-        		    parser_Write_Inst(str_msg,end_cnt);
-        		    end_cnt += 1;
+		    if(val1 == FR_CODE)
+			sprintf(str_msg,"%s0001000000",POP);
+		    else {
+			str_tmp1 = ConverteRegistrador(val1);
+			sprintf(str_msg,"%s%s0000000",POP,str_tmp1);
+			free(str_tmp1);
+			}
+		    parser_Write_Inst(str_msg,end_cnt);
+		    end_cnt += 1;
                     break;
                 
                 /* ==============
@@ -2327,10 +2252,6 @@ int BuscaInstrucao(char * nome)
     else if (strcmp(str_tmp,OUTCHAR_STR) == 0)
     {
         return OUTCHAR_CODE;
-    }
-    else if (strcmp(str_tmp,SOUND_STR) == 0)
-    {
-        return SOUND_CODE;
     }
     else if (strcmp(str_tmp,ADD_STR) == 0)
     {
@@ -2830,18 +2751,6 @@ unsigned short RecebeNumero(void)
                 {
                 case 'n' :
                     ret = (unsigned short)'\n';
-                    break;
-                case 'L' :
-                    ret = (unsigned short) 14;
-                    break;
-                case 'R' :
-                    ret = (unsigned short) 15;
-                    break;
-                case 'U' :
-                    ret = (unsigned short) 16;
-                    break;
-                case 'D' :
-                    ret = (unsigned short) 17;
                     break;
                 case '0' :
                     ret = (unsigned short)'\0';

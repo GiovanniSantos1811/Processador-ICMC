@@ -1284,27 +1284,22 @@ void MontarInstrucoes(void)
                 */
                
                 case DJNZ_CODE: //Instrução Adicionada
-                    //DEC
-                    str_tmp1 = parser_GetItem_s(); //Pegando qual registrador terá seu valor decrementado
+                    //Djnz
+                    str_tmp1 = parser_GetItem_s();
                     val1 = BuscaRegistrador(str_tmp1);
                     free(str_tmp1);
+                    parser_Match(',');
+                    val2 = RecebeEndereco();
                     str_tmp1 = ConverteRegistrador(val1);
-                    sprintf(str_msg,"%s%s1000000",INC,str_tmp1);
-                    free(str_tmp1);
+                    str_tmp2 = NumPBinString(val2);
+                    sprintf(str_msg,"%s%s0000000",DJNZ,str_tmp1);
                     parser_Write_Inst(str_msg,end_cnt);
                     end_cnt += 1;
-
-                    //JNZ
-                    val2 = RecebeEndereco(); //Endereço para o qual o fluxo do código será direcionado
-                    str_tmp1 = NumPBinString(val2);
-                    sprintf(str_msg,"%s%s000000",JMP,COND_NZ);
-                    parser_Write_Inst(str_msg,end_cnt);
-                    end_cnt += 1;
-                    sprintf(str_msg,"%s",str_tmp1);
+                    sprintf(str_msg,"%s",str_tmp2);
                     parser_Write_Inst(str_msg,end_cnt);
                     end_cnt +=1;
                     free(str_tmp1);
-
+                    free(str_tmp2);
                     break;
                     
                 /* ==============

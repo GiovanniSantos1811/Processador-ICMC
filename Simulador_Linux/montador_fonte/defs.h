@@ -47,7 +47,7 @@
 #define JMP_CODE                38
 #define JEQ_CODE                39
 #define JNE_CODE                40
-#define JZ_CODE                 41
+#define JZ_CODE                 99 //Antigo 41
 #define JNZ_CODE                42
 #define JC_CODE                 43
 #define JNC_CODE                44
@@ -101,7 +101,7 @@
 #define NOP_CODE                0
 #define INPUT_CODE              96
 #define OUTPUT_CODE             97
-#define DJNZ_CODE               99 //Instrução adicionada
+#define DJNZ_CODE               41 //Instrução adicionada
 
 /* Definicoes dos op codes (binarios em strings) */
 
@@ -147,6 +147,8 @@
 #define RTI             "000100" /* RTI e um RTS por enquanto. */
 #define PUSH            "000101"
 #define POP             "000110"
+#define DJNZ            "101001"
+
 /* Adddendum */
 #define SET             "000111"
 #define CALLR           "001001"

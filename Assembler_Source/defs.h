@@ -1,11 +1,3 @@
-// Para incluir uma nova INSTRUCAO, e' necessario mexer em 3 ugares diferentes:
-// Definir o Codigo da Instrucao: 
-  // #define LOAD_CODE               1
-// Definir os Bits da Instrucao: 
-  // #define LOAD            "110000"
-// Definir a String de como a Instrucao deve aparecer no programa ASM:
-  // #define LOAD_STR                "LOAD"
-
 #ifndef _DEFS_
 #define _DEFS_
 
@@ -109,7 +101,6 @@
 #define NOP_CODE                0
 #define INPUT_CODE              96
 #define OUTPUT_CODE             97
-#define SOUND_CODE              98
 #define DJNZ_CODE               99 //Instrução adicionada
 
 /* Definicoes dos op codes (binarios em strings) */
@@ -130,7 +121,6 @@
 /* I/O Instructions: */
 #define OUTCHAR         "110010"
 #define INCHAR          "110101"
-#define SOUND           "110100"
 
 /* Aritmethic Instructions(All should begin with "10"):	*/
 #define ADD             "100000"
@@ -157,6 +147,7 @@
 #define RTI             "000100" /* RTI e um RTS por enquanto. */
 #define PUSH            "000101"
 #define POP             "000110"
+#define DJNZ            "011000"
 
 /* Adddendum */
 #define SET             "000111"
@@ -205,7 +196,6 @@
 
 #define INPUT_STR               "INPUT"
 #define OUTPUT_STR              "OUTPUT"
-#define SOUND_STR               "SOUND"
 
 /* ADD */
 #define ADD_STR                 "ADD"
@@ -270,7 +260,7 @@
 #define JNO_STR                 "JNO"
 #define JDZ_STR                 "JDZ"
 #define JN_STR                  "JN"
-#define DJNZ_STR                "DJNZ" //Intrução adicionada -> 2 parâmetros -> decrementa uma unidade em um registrador e pula para uma parte específica do código enquanto esse registrador não guardar 0
+#define DJNZ_STR                "DJNZ" //Intrução adicionada
 
 
 /* CALL */

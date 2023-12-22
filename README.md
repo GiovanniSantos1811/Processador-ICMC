@@ -1,3 +1,26 @@
+# Implementação de nova Funcionalidade no Processador do ICMC
+
+- **Professor:** Eduardo do Valle Simões
+- **Vídeo Apresentação:** https://youtu.be/rcZnggbmXNU
+
+## Integrantes
+- Giovanni dos Santos, 13695341
+- Guilherme Augusto Fincatti da Silva, 13676986
+- Marcelo Eduardo Reginato, 13676965
+- Marco Antonio Gaspar Garcia, 11833581
+- Pedro Guilherme de Barros Zenatte, 13676919
+
+## Descrição
+Neste projeto implementamos uma nova funcionalidade para o processador do ICMC, a `DJNZ`, que é uma fusão das funcionalidades `DEC` e `JNZ`. 
+
+Ela funciona da seguinte maneira: enquanto o valor de um registrador for diferente de zero, ...
+
+
+
+
+### Readme original :arrow_down:
+----------------------------------------------
+
 # Disciplina SSC0119 Prática em Organização de Computadores
 - Por Favor, para as aulas e informações da Disciplina SSC0119 Prática em Organização de Computadores, usar a página da Disciplina em: https://gitlab.com/simoesusp/disciplinas/-/tree/master/SSC0119-Pratica-em-Organizacao-de-Computadores
 

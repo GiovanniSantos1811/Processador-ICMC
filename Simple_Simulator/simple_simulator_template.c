@@ -73,7 +73,6 @@ Do todos os comandos...
 #define INC	36      // "100100"; -- INC Rx / DEC Rx                 		-- Rx <- Rx + 1 / Rx <- Rx - 1  -- b6= INC/DEC : 0/1	Format: < inst(6) | Rx(3) | b6 | xxxxxx >
 #define LMOD 37     // "100101"; -- MOD Rx Ry Rz   			-- Rx <- Ry MOD Rz 	  	Format: < inst(6) | Rx(3) | Ry(3) | Rz(3)| x >
 #define PORC 40		// "101000"; -- PORC Rx Ry Rz           -- Rx <- (Ry * Rz) / 100 
-//#define POT 41		// "101001"; -- POT Rx Ry Rz            -- Rx <- Ry^{Ry} 
 
 // Logic Instructions (All should begin wiht "01"):
 #define LOGIC 1
@@ -124,6 +123,7 @@ Do todos os comandos...
 
 unsigned int MEMORY[TAMANHO_MEMORIA]; // Vetor que representa a Memoria de programa e de dados do Processador
 int reg[8]; // 8 registradores
+int n_reg;
 
 typedef struct _resultadoUla{
 	unsigned int result;
@@ -421,7 +421,6 @@ loop:
 					break;
 
 				case ADD:
-				//case POT:
 				case PORC:
 				case SUB:
 				case MULT:
@@ -526,9 +525,12 @@ loop:
 					break;
 				
 				case DJNZ:
-					COND = pega_pedaco(IR,9,6);
-
-					if(FR[3]==0 && (COND==4))                            // NOT ZERO
+					n_reg = pega_pedaco(IR,9,7); //Pegando qual registro será decrementado e analisado
+					//printf("%d, ", n_reg);
+					//printf("IR: %d, ", IR);
+					
+					reg[n_reg]--; //Decrementa uma unidade do registrador especificado
+					if(reg[n_reg] > 0) //Garantindo que atenda a condição de NOT ZERO                         
 					{ // PC = MEMORY[PC];
 						selM1 = sPC;
 						RW = 0;
@@ -950,11 +952,6 @@ ResultadoUla ULA(unsigned int x, unsigned int y, unsigned int OP, int carry) {
 				case PORC:
 					result = (x*y)/100;
 					break;
-				/*case POT:
-					result = x;
-					for(int i = 1; i < y; i++)
-						result *= x;
-					break;*/
 					
 				case LMOD:
 					if(y==0) {
@@ -964,16 +961,6 @@ ResultadoUla ULA(unsigned int x, unsigned int y, unsigned int OP, int carry) {
 						result = x%y;
 						auxFRbits[DIV_BY_ZERO] = 0;
 					}
-					break;	
-				case DJNZ:
-					result = x-1; //Decrementando uma unidade no registrador
-
-					printf("DEC, ");
-
-					if(result < 0)// Negative
-						auxFRbits[NEGATIVE] = 1;
-					else 
-						auxFRbits[NEGATIVE] = 0;
 					break;
 				default:
 					result = x;

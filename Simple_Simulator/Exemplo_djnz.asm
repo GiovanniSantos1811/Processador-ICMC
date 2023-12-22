@@ -1,7 +1,11 @@
-loadn r1, #'E'
-    loadn r2, #1
-    add r3, r1, r2
-    loadn r0, #10
-    outchar r3, r0
+;Teste da instrução DJNZ 
+loadn r6, #3
+loadn r0, #'E'
+loadn r5, #0
+
+loop:
+	outchar r0, r5 ;Printando na tela a letra E toda vez que passa nesse loop
+
+	djnz r6, loop
 
 halt
